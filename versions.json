@@ -1,0 +1,14 @@
+{
+  "versions": [
+    {
+      "id": "0.0.9",
+      "name": "XingCraft 0.0.9",
+      "zip": "https://github.com/xinglaureverso/xingcraft-launcher/assets/0.0.9.zip"
+    },
+    {
+      "id": "1.0",
+      "name": "XingCraft 1.0",
+      "zip": "https://github.com/xinglaureverso/xingcraft-launcher/assets/1.0.zip"
+    }
+  ]
+}
