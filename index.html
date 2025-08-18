@@ -1,78 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>XingCraft Launcher</title>
+  <meta charset="UTF-8">
+  <title>XingCraft Launcher Web</title>
   <style>
     body {
-      background: #111;
-      color: lime;
       font-family: monospace;
+      background: linear-gradient(#3a80d6, #1e4fa3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+    }
+    .box {
+      background: rgba(0,0,0,0.7);
       padding: 20px;
+      border: 2px solid white;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 320px;
     }
-    h1 {
-      text-align: center;
-      font-size: 32px;
+    input, select, button {
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
     }
-    .section {
-      margin: 40px 0;
+    button {
+      cursor: pointer;
+      background: #222;
+      color: white;
+      border: 2px solid white;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #444;
+      transform: scale(1.05);
     }
     .skin-preview {
-      width: 100px;
-      height: 200px;
-      background: #333;
-      margin-bottom: 10px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
-      background: #000;
-      color: lime;
-      border: 2px solid lime;
-    }
-    .version {
-      margin: 10px 0;
+      width: 64px;
+      height: 64px;
+      border: 2px solid white;
+      background-size: cover;
+      background-position: center;
+      margin: auto;
     }
   </style>
 </head>
 <body>
+  <h1>🚀 XingCraft Launcher Web</h1>
+  <div class="box">
+    <label>Nickname:</label>
+    <input type="text" id="nickname" placeholder="Digite seu nome">
 
-  <h1>🚀 XingCraft Launcher</h1>
+    <label>Skin (URL da imagem):</label>
+    <input type="text" id="skinUrl" placeholder="Cole link da skin">
+    <div id="skinPreview" class="skin-preview"></div>
 
-  <div class="section">
-    <h2>🎨 Skins</h2>
-    <div class="skin-preview" id="preview">[Preview]</div>
-    <input type="file" id="skinUpload" accept=".png">
-    <button onclick="applySkin()">Aplicar Skin</button>
-  </div>
+    <label>Versão:</label>
+    <select id="versao"></select>
 
-  <div class="section">
-    <h2>📦 Versões</h2>
-    <div class="version">
-      <span>Versão beta 0.0.9</span>
-      <a href="assets/0.0.9.zip" download>
-        <button>Baixar .zip</button>
-      </a>
-    </div>
-    <div class="version">
-      <span>Versão 1.0</span>
-      <a href="assets/1.0.zip" download>
-        <button>Baixar .zip</button>
-      </a>
-    </div>
+    <button onclick="baixarVersao()">⬇ Baixar Versão</button>
+    <button onclick="baixarFiddle()">⚡ Baixar Electron Fiddle</button>
   </div>
 
   <script>
-    function applySkin() {
-      const fileInput = document.getElementById("skinUpload");
-      const file = fileInput.files[0];
-      if (file) {
-        alert("Skin aplicada com sucesso: " + file.name);
-        // Aqui você pode enviar pro backend ou salvar localmente
-      } else {
-        alert("Escolha uma skin primeiro!");
+    const versionsURL = "./versions.json";
+
+    // Preview de skin
+    document.getElementById("skinUrl").addEventListener("input", e => {
+      document.getElementById("skinPreview").style.backgroundImage = `url('${e.target.value}')`;
+    });
+
+    // Carrega versões do JSON
+    fetch(versionsURL)
+      .then(r => r.json())
+      .then(data => {
+        const select = document.getElementById("versao");
+        data.versions.forEach(v => {
+          const opt = document.createElement("option");
+          opt.value = v.zip;
+          opt.textContent = v.name;
+          select.appendChild(opt);
+        });
+      });
+
+    function baixarVersao() {
+      const nick = document.getElementById("nickname").value.trim();
+      const url = document.getElementById("versao").value;
+      const skin = document.getElementById("skinUrl").value.trim();
+
+      if (!nick) {
+        alert("Digite seu nickname!");
+        return;
       }
+
+      localStorage.setItem("xingcraft_nick", nick);
+      if (skin) localStorage.setItem("xingcraft_skin", skin);
+
+      // Força download da versão escolhida
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      alert("Versão baixada! Extraia o ZIP e abra no Electron Fiddle.");
+    }
+
+    function baixarFiddle() {
+      window.open("https://www.electronjs.org/fiddle", "_blank");
     }
   </script>
-
 </body>
 </html>
